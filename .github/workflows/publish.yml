@@ -1,0 +1,72 @@
+name: Publier AVILY
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # toutes les 30 min (GitHub peut retarder de quelques minutes)
+  push:
+    paths: ["queue/**"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Test sans rien publier"
+        type: boolean
+        default: false
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests==2.32.3
+
+      - name: Publier les posts arrivés à échéance
+        id: run
+        env:
+          PAGES_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+          NEW_SECRETS_FILE: ${{ runner.temp }}/new_secrets.json
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          TT_CLIENT_KEY: ${{ secrets.TT_CLIENT_KEY }}
+          TT_CLIENT_SECRET: ${{ secrets.TT_CLIENT_SECRET }}
+          TT_REFRESH_TOKEN: ${{ secrets.TT_REFRESH_TOKEN }}
+        run: python publisher/publish.py
+
+      - name: Enregistrer les jetons renouvelés
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          F: ${{ runner.temp }}/new_secrets.json
+        run: |
+          if [ -f "$F" ] && [ -n "$GH_TOKEN" ]; then
+            python - <<'PY'
+          import json, os, subprocess
+          for k, v in json.load(open(os.environ["F"])).items():
+              subprocess.run(["gh", "secret", "set", k, "--body", v], check=True)
+              print("secret mis à jour :", k)
+          PY
+          fi
+
+      - name: Sauvegarder l'état de la file
+        if: always()
+        run: |
+          git config user.name "avily-bot"
+          git config user.email "avily-bot@users.noreply.github.com"
+          git add -A queue archive 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "état de publication $(date -u +%FT%TZ)" && git push)
