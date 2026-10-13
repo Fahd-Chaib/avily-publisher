@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AVILY · connexion TikTok</title>
+<style>body{font-family:system-ui,sans-serif;background:#F7F2EC;color:#262222;max-width:640px;margin:40px auto;padding:0 16px}
+h1{color:#7E2946;font-weight:600}code{display:block;background:#fff;border:1px solid #D9C9C4;padding:12px;word-break:break-all;border-radius:8px}
+button{margin-top:12px;background:#7E2946;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-size:16px}</style></head>
+<body><h1>Connexion TikTok</h1><p id="msg">Lecture du code…</p><code id="code"></code><button id="copy" hidden>Copier le code</button>
+<script>
+const p=new URLSearchParams(location.search), c=p.get('code'), e=p.get('error');
+const m=document.getElementById('msg'), b=document.getElementById('copy');
+if(c){m.textContent="Copie ce code et colle-le dans GitHub (Actions → Connecter TikTok → Run workflow). Il expire au bout de quelques minutes.";
+document.getElementById('code').textContent=c;b.hidden=false;b.onclick=()=>navigator.clipboard.writeText(c).then(()=>b.textContent='Copié ✓');}
+else{m.textContent="Pas de code reçu"+(e?" (erreur : "+e+" — "+(p.get('error_description')||'')+")":"")+".";}
+</script></body></html>

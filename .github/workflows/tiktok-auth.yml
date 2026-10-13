@@ -1,0 +1,41 @@
+name: Connecter TikTok
+
+on:
+  workflow_dispatch:
+    inputs:
+      code:
+        description: "Code affiché sur la page de connexion TikTok"
+        required: true
+
+jobs:
+  auth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Échanger le code contre un jeton et l'enregistrer en secret
+        env:
+          CODE: ${{ inputs.code }}
+          TT_CLIENT_KEY: ${{ secrets.TT_CLIENT_KEY }}
+          TT_CLIENT_SECRET: ${{ secrets.TT_CLIENT_SECRET }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          REDIRECT: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/tiktok/callback.html
+        run: |
+          echo "::add-mask::$CODE"
+          python3 - <<'PY'
+          import json, os, subprocess, urllib.parse, urllib.request
+          data = urllib.parse.urlencode({
+              "client_key": os.environ["TT_CLIENT_KEY"], "client_secret": os.environ["TT_CLIENT_SECRET"],
+              "code": urllib.parse.unquote(os.environ["CODE"]), "grant_type": "authorization_code",
+              "redirect_uri": os.environ["REDIRECT"]}).encode()
+          req = urllib.request.Request("https://open.tiktokapis.com/v2/oauth/token/", data=data,
+                                       headers={"Content-Type": "application/x-www-form-urlencoded"})
+          try:
+              j = json.load(urllib.request.urlopen(req))
+          except urllib.error.HTTPError as e:
+              raise SystemExit(f"TikTok a refusé : {e.code} {e.read()[:300]!r}")
+          if "refresh_token" not in j:
+              raise SystemExit(f"Pas de jeton reçu : { {k: v for k, v in j.items() if 'token' not in k} }")
+          print("::add-mask::" + j["refresh_token"])
+          subprocess.run(["gh", "secret", "set", "TT_REFRESH_TOKEN", "-R", os.environ.get("GITHUB_REPOSITORY", ""),
+                          "--body", j["refresh_token"]], check=True)
+          print("TikTok connecté. Portée accordée :", j.get("scope"))
+          PY
