@@ -25,7 +25,7 @@ jobs:
           data = urllib.parse.urlencode({
               "client_key": os.environ["TT_CLIENT_KEY"], "client_secret": os.environ["TT_CLIENT_SECRET"],
               "code": urllib.parse.unquote(os.environ["CODE"]), "grant_type": "authorization_code",
-              "redirect_uri": os.environ["REDIRECT"]}).encode()
+              "redirect_uri": os.environ["REDIRECT"].lower()}).encode()
           req = urllib.request.Request("https://open.tiktokapis.com/v2/oauth/token/", data=data,
                                        headers={"Content-Type": "application/x-www-form-urlencoded"})
           try:
