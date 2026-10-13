@@ -75,7 +75,7 @@ def yt_existing_titles(tok):
                              params={"part": "snippet", "playlistId": up, "maxResults": 50, **({"pageToken": page} if page else {})},
                              headers=h, timeout=30).json()
             for it in r.get("items", []):
-                titles[it["snippet"]["title"]] = it["snippet"]["resourceId"]["videoId"]
+                sn = it["snippet"]; titles[(sn["title"], sn.get("description", "")[:80])] = sn["resourceId"]["videoId"]
             page = r.get("nextPageToken")
             if not page:
                 break
@@ -98,7 +98,7 @@ def youtube(post, video, when):
     if DRY:
         log("  [dry] youtube", json.dumps(meta, ensure_ascii=False)[:200]); return {"state": "dry"}
     tok = yt_token()
-    existing = yt_existing_titles(tok).get(y["title"][:100])
+    existing = yt_existing_titles(tok).get((y["title"][:100], y["description"][:80]))
     if existing:
         return {"state": "scheduled", "id": existing, "url": f"https://youtube.com/shorts/{existing}",
                 "note": "déjà sur la chaîne"}
