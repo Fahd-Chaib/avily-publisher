@@ -68,5 +68,6 @@ jobs:
         run: |
           git config user.name "avily-bot"
           git config user.email "avily-bot@users.noreply.github.com"
-          git add -A queue archive 2>/dev/null || true
+          git add -A queue
+          if [ -d archive ]; then git add -A archive; fi
           git diff --cached --quiet || (git commit -m "état de publication $(date -u +%FT%TZ)" && git push)
