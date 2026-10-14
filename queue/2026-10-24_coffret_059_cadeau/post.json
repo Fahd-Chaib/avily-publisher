@@ -26,5 +26,13 @@
       "beauté Maroc",
       "cadeau Maroc"
     ]
+  },
+  "results": {
+    "youtube": {
+      "state": "scheduled",
+      "id": "Q4TlOdqIgss",
+      "url": "https://youtube.com/shorts/Q4TlOdqIgss",
+      "at": "2026-10-14T21:44:38.625305+00:00"
+    }
   }
 }
