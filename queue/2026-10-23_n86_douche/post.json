@@ -27,5 +27,13 @@
       "parfum pas cher",
       "beauté Maroc"
     ]
+  },
+  "results": {
+    "youtube": {
+      "state": "scheduled",
+      "id": "6koOjYmyNmM",
+      "url": "https://youtube.com/shorts/6koOjYmyNmM",
+      "at": "2026-10-14T18:54:58.873717+00:00"
+    }
   }
 }
