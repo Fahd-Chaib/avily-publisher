@@ -35,6 +35,16 @@
       "url": "https://youtube.com/shorts/tf5XZwdkTEE",
       "note": "déjà sur la chaîne",
       "at": "2026-10-13T20:11:41.416861+00:00"
+    },
+    "instagram": {
+      "state": "published",
+      "id": "18114367979144103",
+      "at": "2026-10-14T20:01:14.967216+00:00"
+    },
+    "tiktok": {
+      "state": "draft_sent",
+      "note": "ouvre TikTok > notifications/boîte de réception pour finaliser",
+      "at": "2026-10-14T20:01:14.967216+00:00"
     }
   }
 }
