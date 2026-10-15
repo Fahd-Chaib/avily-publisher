@@ -35,6 +35,16 @@
       "url": "https://youtube.com/shorts/FncFS9TkBIw",
       "note": "déjà sur la chaîne",
       "at": "2026-10-13T20:11:41.416861+00:00"
+    },
+    "instagram": {
+      "state": "error",
+      "note": "{\"error\":{\"message\":\"API access blocked.\",\"type\":\"OAuthException\",\"code\":200,\"fbtrace_id\":\"A5uFlsaKCYNQoHx_uRzu_Dt\"}}",
+      "at": "2026-10-15T20:01:14.543977+00:00"
+    },
+    "tiktok": {
+      "state": "draft_sent",
+      "note": "ouvre TikTok > notifications/boîte de réception pour finaliser",
+      "at": "2026-10-15T20:01:14.543977+00:00"
     }
   }
 }
