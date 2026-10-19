@@ -32,6 +32,16 @@
       "id": "pUdUSrusiLU",
       "url": "https://youtube.com/shorts/pUdUSrusiLU",
       "at": "2026-10-14T23:17:29.783754+00:00"
+    },
+    "instagram": {
+      "state": "published",
+      "id": "18120686569943928",
+      "at": "2026-10-19T20:01:12.777496+00:00"
+    },
+    "tiktok": {
+      "state": "draft_sent",
+      "note": "ouvre TikTok > notifications/boîte de réception pour finaliser",
+      "at": "2026-10-19T20:01:12.777496+00:00"
     }
   }
 }
